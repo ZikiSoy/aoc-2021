@@ -66,7 +66,7 @@ func main() {
 	sort.Ints(allz)
 	allz = unique(allz)
 	fmt.Println(allx)
-	fmt.Println(len(allx))
+	fmt.Println(len(allx), len(ally), len(allz))
 	for i := 0; i < len(ins); i++ {
 		ins[i] = node{ins[i].ins,
 			idx(allx, ins[i].x1), idx(allx, ins[i].x2),
@@ -74,6 +74,7 @@ func main() {
 			idx(allz, ins[i].z1), idx(allz, ins[i].z2)}
 	}
 	ans := 0
+	var mp2 [900][900][900]bool
 	for i := 0; i < len(ins); i++ {
 		for x := ins[i].x1; x < ins[i].x2; x++ {
 			for y := ins[i].y1; y < ins[i].y2; y++ {
@@ -81,9 +82,11 @@ func main() {
 					//ans++
 
 					if ins[i].ins == "on" {
-						mp[point{x, y, z}] = true
+						// mp[point{x, y, z}] = true
+						mp2[x][y][z] = true
 					} else {
-						mp[point{x, y, z}] = false
+						// mp[point{x, y, z}] = false
+						mp2[x][y][z] = false
 					}
 
 				}
@@ -93,6 +96,15 @@ func main() {
 	for k, v := range mp {
 		if v {
 			ans += (allx[k.x+1] - allx[k.x]) * (ally[k.y+1] - ally[k.y]) * (allz[k.z+1] - allz[k.z])
+		}
+	}
+	for x := 0; x < len(allx); x++ {
+		for y := 0; y < len(ally); y++ {
+			for z := 0; z < len(allz); z++ {
+				if mp2[x][y][z] {
+					ans += (allx[x+1] - allx[x]) * (ally[y+1] - ally[y]) * (allz[z+1] - allz[z])
+				}
+			}
 		}
 	}
 	fmt.Println("ans=", ans)
