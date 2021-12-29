@@ -37,16 +37,6 @@ func bfs(q []state) int {
 		now := q[0]
 		run++
 		cost, _ := vis[now]
-		if run%100000 == 0 || run < 0 {
-			fmt.Print(run, " ")
-			printState(now)
-		}
-		if string(now.hall[:]) == "AA.....B.BD" ||
-			string(now.hall[:]) == "AA.C...B.BD" ||
-			string(now.hall[:]) == "AA...C.B.BD" {
-			fmt.Print(run, " ")
-			printState(now)
-		}
 		q = q[1:]
 		end_state := true
 		for i := 0; i < len(now.row); i++ {
@@ -57,7 +47,6 @@ func bfs(q []state) int {
 			}
 		}
 		if end_state {
-			fmt.Println(run, string(now.hall[:]), now.row, cost)
 			if ans < 0 || ans > cost {
 				ans = cost
 				fmt.Println("ans:=", ans)
@@ -128,13 +117,11 @@ func bfs(q []state) int {
 						nxt.row[i][j], nxt.hall[k] = nxt.hall[k], nxt.row[i][j]
 						new_cost := cost + cost_per_step[tp]*step
 						pre_cost, lookup := vis[nxt]
-						if !lookup || pre_cost > new_cost {
+						if !lookup {
 							vis[nxt] = new_cost
-							if run < 0 {
-								fmt.Println(string(tp+'A'), cost, cost_per_step[tp], step, vis[nxt])
-								printState(nxt)
-							}
 							q = append(q, nxt)
+						} else if pre_cost > new_cost {
+							vis[nxt] = new_cost
 						}
 						step++
 					}
@@ -150,13 +137,11 @@ func bfs(q []state) int {
 						nxt.row[i][j], nxt.hall[k] = nxt.hall[k], nxt.row[i][j]
 						new_cost := cost + cost_per_step[tp]*step
 						pre_cost, lookup := vis[nxt]
-						if !lookup || pre_cost > new_cost {
+						if !lookup {
 							vis[nxt] = new_cost
-							if run < 0 {
-								fmt.Println(string(tp+'A'), cost, cost_per_step[tp], step, vis[nxt])
-								printState(nxt)
-							}
 							q = append(q, nxt)
+						} else if pre_cost > new_cost {
+							vis[nxt] = new_cost
 						}
 						step++
 					}
