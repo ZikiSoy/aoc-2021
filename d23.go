@@ -10,6 +10,7 @@ type state struct {
 }
 
 var vis map[state]int
+var pre map[state]([]state)
 
 var ans int
 
@@ -28,6 +29,15 @@ func printState(s state) {
 	fmt.Println(vis[s])
 }
 
+func printHistory(s state) {
+	l, found := pre[s]
+	if found {
+		printHistory(l[0])
+	}
+	printState(s)
+	fmt.Println("")
+}
+
 func bfs(q []state) int {
 	cost_per_step := []int{1, 10, 100, 1000}
 	row_num := []int{2, 4, 6, 8}
@@ -37,6 +47,7 @@ func bfs(q []state) int {
 		now := q[0]
 		run++
 		cost, _ := vis[now]
+		state_pointer := q[:1]
 		q = q[1:]
 		end_state := true
 		for i := 0; i < len(now.row); i++ {
@@ -50,6 +61,8 @@ func bfs(q []state) int {
 			if ans < 0 || ans > cost {
 				ans = cost
 				fmt.Println("ans:=", ans)
+				fmt.Println("history")
+				printHistory(now)
 			}
 			continue
 		}
@@ -89,9 +102,11 @@ func bfs(q []state) int {
 						new_cost := cost + cost_per_step[row]*(abs(row_num[row]-i)+pos+1)
 						if !lookup {
 							vis[nxt] = new_cost
+							pre[nxt] = state_pointer
 							q = append(q, nxt)
 						} else if pre_cost > new_cost {
 							vis[nxt] = new_cost
+							pre[nxt] = state_pointer
 						}
 					}
 				}
@@ -119,9 +134,11 @@ func bfs(q []state) int {
 						pre_cost, lookup := vis[nxt]
 						if !lookup {
 							vis[nxt] = new_cost
+							pre[nxt] = state_pointer
 							q = append(q, nxt)
 						} else if pre_cost > new_cost {
 							vis[nxt] = new_cost
+							pre[nxt] = state_pointer
 						}
 						step++
 					}
@@ -139,9 +156,11 @@ func bfs(q []state) int {
 						pre_cost, lookup := vis[nxt]
 						if !lookup {
 							vis[nxt] = new_cost
+							pre[nxt] = state_pointer
 							q = append(q, nxt)
 						} else if pre_cost > new_cost {
 							vis[nxt] = new_cost
+							pre[nxt] = state_pointer
 						}
 						step++
 					}
@@ -166,7 +185,8 @@ func main() {
 	//   #D#B#A#C#
 	//   #D#D#A#A#
 	//   #########
-	s := []string{"BDDD", "CCBD", "CBAA", "BACA"}
+	// s := []string{"BDDD", "CCBD", "CBAA", "BACA"}
+	s := []string{"DDDD", "ACBC", "CBAB", "AACB"}
 	for i := 0; i < 4; i++ {
 		for j := 0; j < 4; j++ {
 			init.row[i][j] = s[i][j]
@@ -174,6 +194,7 @@ func main() {
 	}
 	q := []state{init}
 	vis = map[state]int{}
+	pre = map[state]([]state){}
 	vis[init] = 0
 
 	ans := bfs(q)
